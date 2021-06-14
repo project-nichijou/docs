@@ -86,3 +86,4 @@
 - 实现思路
   - Go
   - Python, Django / Flask / FastAPI
+  - rust (好像是人类之光)
