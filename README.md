@@ -83,6 +83,8 @@
   - Python
   - node.js
 - 数据库与工具都会开源
+- 参考工具：
+  - [油猴脚本 Bangumi动画搜索 跳转AniDB/MyAnimeList/ANN/TMDB和动漫花园等BT站/在线播放站一键跳转](https://greasyfork.org/zh-CN/scripts/405283-bangumi%E5%8A%A8%E7%94%BB%E6%90%9C%E7%B4%A2-%E8%B7%B3%E8%BD%ACanidb-myanimelist-ann-tmdb%E5%92%8C%E5%8A%A8%E6%BC%AB%E8%8A%B1%E5%9B%AD%E7%AD%89bt%E7%AB%99-%E5%9C%A8%E7%BA%BF%E6%92%AD%E6%94%BE%E7%AB%99%E4%B8%80%E9%94%AE%E8%B7%B3%E8%BD%AC-2020%E5%B9%B46%E6%9C%8813%E6%97%A5)
 
 #### 🌏 网站, 信息通知服务
 
