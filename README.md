@@ -99,6 +99,8 @@
 
 - 待定
   - 精确到介绍页的数据：https://github.com/bangumi-data/bangumi-data
+  - 通过搜索进行定位
+  - 插件服务：传入参数可以为番剧名称
 
 #### Web Server / API
 
