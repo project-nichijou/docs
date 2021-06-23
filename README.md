@@ -38,7 +38,8 @@
 #### 🌏 番剧数据库构建
 
 - 总体思路
-  - Bangumi定时爬虫，日后可能添加其他数据库如AniDB
+  - Bangumi定时爬虫
+  - AniDB匹配: https://anidb.net/search/anime/?do.search=1
 - 实现思路
   - Scrapy, Python
   - 参考: https://github.com/AllenTom/Bangumi-Spider-API
