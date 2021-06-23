@@ -54,6 +54,12 @@
 1. 更加方便，因为部分 bgm.tv 的数据需要 Cookies (由用户提供)，增加了用户的使用学习成本
 2. 我们开源在GitHub上的数据库可以提供全球jsDelivr加速
 
+流程框架：
+
+<div align="center">
+	<img src="imgs/nichijou-bangumi.svg" alt="nichijou-bangumi"/>
+</div>
+
 #### 🌏 文件hash数据库构建
 
 - 总体思路
