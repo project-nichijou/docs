@@ -43,6 +43,8 @@
 - 实现思路
   - Scrapy, Python
   - 参考: https://github.com/AllenTom/Bangumi-Spider-API
+  - https://github.com/manami-project/anime-offline-database
+  - https://github.com/manami-project/modb-anidb
 - 数据库与工具都会开源
 - 不考虑
   - https://github.com/bangumi-data/bangumi-data , 原因：人工、延迟、没有特殊番剧
@@ -60,6 +62,8 @@
 <div align="center">
 	<img src="imgs/nichijou-bangumi.svg" alt="nichijou-bangumi"/>
 </div>
+
+注意：由于AniDB等网站可能会进行流量限制，诸如限制单位时间内访问次数，所以我们需要对数据进行判断、缓存。
 
 #### 🌏 文件hash数据库构建
 
