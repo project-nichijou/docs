@@ -5,7 +5,9 @@
 		- [总架构](#总架构)
 		- [`Spider` 推荐实现](#spider-推荐实现)
 		- [`Matcher` 实现细节](#matcher-实现细节)
+		- [`Publisher` 实现细节](#publisher-实现细节)
 		- [自定义数据结构](#自定义数据结构)
+			- [`[Object] NameDistance`](#object-namedistance)
 			- [`[Object] RelatedItem`](#object-relateditem)
 			- [`[Enum] AnimeEpisodeType`](#enum-animeepisodetype)
 			- [`[Enum] AiringStatus`](#enum-airingstatus)
@@ -13,15 +15,21 @@
 			- [关于`id`](#关于id)
 			- [`Spider: Tables`](#spider-tables)
 			- [`Spider: [Table] anime`](#spider-table-anime)
-			- [`Spider: [Table] anime-episode`](#spider-table-anime-episode)
+			- [`Spider: [Table] episode`](#spider-table-episode)
 			- [`Spider: [Table] anime-name`](#spider-table-anime-name)
+			- [`Spider: [Table] episode-name`](#spider-table-episode-name)
 			- [`Spider: [Table] log`](#spider-table-log)
 			- [`Spider: [Table] request-failed`](#spider-table-request-failed)
 			- [`Spider: [Table] cache`](#spider-table-cache)
 		- [内部数据库规范](#内部数据库规范)
 			- [内部`ID` (`Nichijou ID`)](#内部id-nichijou-id)
 			- [`Nichijou: Tables`](#nichijou-tables)
-			- [`Nichijou: [Table]`](#nichijou-table)
+			- [`Nichijou: [Table] anime`](#nichijou-table-anime)
+			- [`Nichijou: [Table] anime-name`](#nichijou-table-anime-name)
+			- [`Nichijou: [Table] episode-name`](#nichijou-table-episode-name)
+			- [`Nichijou: [Table] match-fail`](#nichijou-table-match-fail)
+			- [`Nichijou: [Table] conflict`](#nichijou-table-conflict)
+			- [`Nichijou: [Table] revise`](#nichijou-table-revise)
 		- [发布数据规范](#发布数据规范)
 		- [发布数据方式](#发布数据方式)
 
@@ -54,16 +62,27 @@
 
 ### `Matcher` 实现细节
 
+新增数据源中的`name`字段将会与**内部数据库**进行模糊匹配，计算出编辑距离 (Levenshtein距离)。如果某一条目的任意一个`name`可以精确匹配 (即编辑距离为0)，则确认匹配，反之，将记录下与每条`name`前五小的编辑距离。
 
+### `Publisher` 实现细节
+
+根据**内部数据库**的匹配数据，综合来自多个数据源的信息，并进行确认、核实。如果遇到多个信息源数据不同的情况，首先会根据默认优先级选择数据，但同时会记录一条`conflict`信息，等待人工审核批准。所有批准后的信息将作为`revise`写入数据库。注意：在所有信息合并的过程中，`revised`的数据有着最高优先级，并且不会产生`conflict`.
 
 ### 自定义数据结构
 
+#### `[Object] NameDistance`
+
+| Field  |   Type   | Nullable | Description |
+| :----: | :------: | :------: | :---------: |
+| `name` | `String` |    ❌     |    名称     |
+| `dis`  |  `int`   |    ❌     |  编辑距离   |
+
 #### `[Object] RelatedItem`
 
-| Field  |   Type   | Nullable |
-| :----: | :------: | :------: |
-| `name` | `String` |    ❌     |
-| `url`  | `String` |    ❌     |
+| Field  |   Type   | Nullable | Description |
+| :----: | :------: | :------: | :---------: |
+| `name` | `String` |    ❌     |    名称     |
+| `url`  | `String` |    ❌     |    链接     |
 
 #### `[Enum] AnimeEpisodeType`
 
@@ -96,25 +115,18 @@
 
 #### 关于`id`
 
-存在两类`id`:
-- `aid`: `anime id`
-- `eid`: `episode id`
-
 如果数据源的`id`不是数型的，那么应该进行`MD5`的哈希，取低32位 (共128位) 进行储存。由于数据量不是特别大，所以碰撞的概率较低。
 
 #### `Spider: Tables`
 
 关于数据库的`tables`:
 
-- `anime`
-- `anime-episode`
-- `anime-name`
-
 |       名称       | Required |              Description              |
 | :--------------: | :------: | :-----------------------------------: |
 |     `anime`      |    ✅     |             动画详细信息              |
-| `anime-episode`  |    ✅     |           动画分集详细信息            |
+|    `episode`     |    ✅     |           动画分集详细信息            |
 |   `anime-name`   |    ✅     |             动画名称汇总              |
+|  `episode-name`  |    ✅     |             剧集名称汇总              |
 |      `log`       |    ✅     |                 日志                  |
 | `request-failed` |    ✅     |        失败请求 (可以进行重试)        |
 |     `cache`      |    ✅     |               蜘蛛缓存                |
@@ -124,11 +136,11 @@
 
 #### `Spider: [Table] anime`
 
-**`Primary Key`: `aid`**
+**`Primary Key`: `id`**
 
 |   名称    |  数据类型  | 长度/集合 | 无符号 | Nullable |          描述           |
 | :-------: | :--------: | :-------: | :----: | :------: | :---------------------: |
-|   `aid`   |   `INT`    |     /     |   ✅    |    ❌     |  数据源番剧的唯一`id`   |
+|   `id`    |   `INT`    |     /     |   ✅    |    ❌     |  数据源番剧的唯一`id`   |
 |   `url`   | `LONGTEXT` |     /     |   /    |    ❌     |          链接           |
 |  `name`   | `VARCHAR`  |    200    |   /    |    ❌     |          原名           |
 | `name_cn` | `VARCHAR`  |    200    |   /    |    ✅     |         中文名          |
@@ -150,32 +162,43 @@
 - `tags`中不同条目用换行隔开
 - `type`可能值: `TV`, `OVA`, ...
 
-#### `Spider: [Table] anime-episode`
+#### `Spider: [Table] episode`
 
-**`Primary Key`: `eid`**
+**`Primary Key`: `id` & `type` & `sort`**
 
 |    名称    |  数据类型  | 长度/集合 | 无符号 | Nullable |           描述            |
 | :--------: | :--------: | :-------: | :----: | :------: | :-----------------------: |
-|   `eid`    |   `INT`    |     /     |   ✅    |    ❌     |   数据源剧集的唯一`id`    |
-|   `aid`    |   `INT`    |     /     |   ✅    |    ❌     |   数据源番剧的唯一`id`    |
+|    `id`    |   `INT`    |     /     |   ✅    |    ❌     |   数据源番剧的唯一`id`    |
+|   `type`   |   `INT`    |     /     |   ✅    |    ❌     | `[Enum] AnimeEpisodeType` |
+|   `sort`   |   `INT`    |     /     |   ✅    |    ❌     |    当前`type`中多少话     |
 |   `url`    | `LONGTEXT` |     /     |   /    |    ❌     |           链接            |
 |   `name`   | `VARCHAR`  |    200    |   /    |    ✅     |           原名            |
 | `name_cn`  | `VARCHAR`  |    200    |   /    |    ✅     |          中文名           |
-|   `type`   |   `INT`    |     /     |   ✅    |    ❌     | `[Enum] AnimeEpisodeType` |
-|   `sort`   |   `INT`    |     /     |   ✅    |    ❌     |    当前`type`中多少话     |
-|  `status`  |   `INT`    |     /     |   ✅    |    ❌     |         放送状态          |
+|  `status`  |   `INT`    |     /     |   ✅    |    ❌     |   `[Enum] AiringStatus`   |
 | `duration` |   `INT`    |     /     |   ✅    |    ✅     |         时长 (秒)         |
 |   `date`   |   `DATE`   |     /     |   /    |    ✅     |         放送日期          |
 |   `desc`   | `LONGTEXT` |     /     |   /    |    ✅     |           简介            |
 
 #### `Spider: [Table] anime-name`
 
-**`Primary Key`: `aid`**
+**`Primary Key`: `id` & `name`**
 
 |  名称  | 数据类型  | 长度/集合 | 无符号 | Nullable |         描述         |
 | :----: | :-------: | :-------: | :----: | :------: | :------------------: |
-| `aid`  |   `INT`   |     /     |   ✅    |    ❌     | 数据源番剧的唯一`id` |
-| `name` | `VARCHAR` |    200    |   /    |    ✅     |         原名         |
+|  `id`  |   `INT`   |     /     |   ✅    |    ❌     | 数据源番剧的唯一`id` |
+| `name` | `VARCHAR` |    200    |   /    |    ❌     |       番剧名称       |
+
+#### `Spider: [Table] episode-name`
+
+**`Primary Key`: `id` & `type` & `sort` & `name`**
+
+|  名称  | 数据类型  | 长度/集合 | 无符号 | Nullable |           描述            |
+| :----: | :-------: | :-------: | :----: | :------: | :-----------------------: |
+|  `id`  |   `INT`   |     /     |   ✅    |    ❌     |   数据源番剧的唯一`id`    |
+| `type` |   `INT`   |     /     |   ✅    |    ❌     | `[Enum] AnimeEpisodeType` |
+| `sort` |   `INT`   |     /     |   ✅    |    ❌     |    当前`type`中多少话     |
+| `name` | `VARCHAR` |    200    |   /    |    ✅     |         剧集名称          |
+
 
 #### `Spider: [Table] log`
 
@@ -186,11 +209,11 @@
 
 #### `Spider: [Table] request-failed`
 
-|   名称   |  数据类型  | 长度/集合 | 无符号 | Nullable |        描述        |
-| :------: | :--------: | :-------: | :----: | :------: | :----------------: |
-|   `id`   |   `INT`    |     /     |   ✅    |    ❌     | 失败任务的相应`id` |
-| `spider` | `VARCHAR`  |    20     |   /    |    ❌     |     蜘蛛的名称     |
-|  `desc`  | `LONGTEXT` |     /     |   /    |    ✅     |      错误内容      |
+|   名称   |  数据类型  | 长度/集合 | 无符号 | Nullable |      描述       |
+| :------: | :--------: | :-------: | :----: | :------: | :-------------: |
+|  `url`   | `LONGTEXT` |     /     |   ✅    |    ❌     | 失败任务的`url` |
+| `spider` | `VARCHAR`  |    20     |   /    |    ❌     |   蜘蛛的名称    |
+|  `desc`  | `LONGTEXT` |     /     |   /    |    ✅     |    错误内容     |
 
 注:
 - `spider`字段，以`Scrapy`为例，应该为`<spider>.name`
@@ -210,13 +233,81 @@
 
 #### 内部`ID` (`Nichijou ID`)
 
-放长远眼光看，为了稳定、可持续的发展，建立一套内部自己的`ID`是十分有必要的。
+`Nichijou ID`在下面将简记为`nid`。放长远眼光看，为了稳定、可持续的发展，建立一套内部自己的`ID`是十分有必要的。
+
+现阶段我们私有`ID`的建立方法如下:
+1. `ID`格式为`INT`
+2. 以`AniDB`为核心，由于其也有跳跃的`ID`，我们按照从小到大的顺序排列入库，并重新编号
+3. 在此之后，新加入的条目一般需要人工审核（即`Matcher`运行后无法和现有条目精确匹配）
 
 #### `Nichijou: Tables`
 
-#### `Nichijou: [Table]`
+|      名称      | Required | Description  |
+| :------------: | :------: | :----------: |
+|    `anime`     |    ✅     | 番剧匹配索引 |
+|  `anime-name`  |    ✅     |   番剧名称   |
+| `episode-name` |    ✅     |   剧集名称   |
+|  `match-fail`  |    ✅     |   失败匹配   |
+|   `conflict`   |    ✅     |   冲突内容   |
+|    `revise`    |    ✅     |   修订数据   |
 
+#### `Nichijou: [Table] anime`
 
+**`Primary Key`: `nid`**
+
+|    名称    | 数据类型  | 长度/集合 | 无符号 | Nullable |       描述       |
+| :--------: | :-------: | :-------: | :----: | :------: | :--------------: |
+|   `nid`    |   `INT`   |     /     |   ✅    |    ❌     |   内部番剧`ID`   |
+| `<source>` | `VARCHAR` |    40     |   ✅    |    ❌     | 数据源的番剧`ID` |
+
+说明：`<source>`为模板，即数据源的名称。多个数据源会增加列数。
+
+#### `Nichijou: [Table] anime-name`
+
+**`Primary Key`: `nid` & `name`**
+
+|  名称  | 数据类型  | 长度/集合 | 无符号 | Nullable |     描述     |
+| :----: | :-------: | :-------: | :----: | :------: | :----------: |
+| `nid`  |   `INT`   |     /     |   ✅    |    ❌     | 内部番剧`id` |
+| `name` | `VARCHAR` |    200    |   /    |    ❌     |   番剧名称   |
+
+#### `Nichijou: [Table] episode-name`
+
+**`Primary Key`: `nid` & `type` & `sort` & `name`**
+
+|  名称  | 数据类型  | 长度/集合 | 无符号 | Nullable |           描述            |
+| :----: | :-------: | :-------: | :----: | :------: | :-----------------------: |
+| `nid`  |   `INT`   |     /     |   ✅    |    ❌     |       内部番剧`id`        |
+| `type` |   `INT`   |     /     |   ✅    |    ❌     | `[Enum] AnimeEpisodeType` |
+| `sort` |   `INT`   |     /     |   ✅    |    ❌     |    当前`type`中多少话     |
+| `name` | `VARCHAR` |    200    |   /    |    ✅     |         剧集名称          |
+
+#### `Nichijou: [Table] match-fail`
+
+**`Primary Key`: `id` & `source`**
+
+|   名称   |  数据类型  | 长度/集合 | 无符号 | Nullable |             描述             |
+| :------: | :--------: | :-------: | :----: | :------: | :--------------------------: |
+|   `id`   |   `INT`    |     /     |   ✅    |    ❌     |     数据源番剧的唯一`id`     |
+| `source` | `VARCHAR`  |    40     |   /    |    ❌     |          数据源名称          |
+|  `dis`   | `LONGTEXT` |     /     |   /    |    ❌     | 前五小`json: [NameDistance]` |
+
+#### `Nichijou: [Table] conflict`
+
+**`Primary Key`: `nid` & `field`**
+
+|  名称   | 数据类型  | 长度/集合 | 无符号 | Nullable |      描述      |
+| :-----: | :-------: | :-------: | :----: | :------: | :------------: |
+|  `nid`  |   `INT`   |     /     |   ✅    |    ❌     |  内部番剧`id`  |
+| `field` | `VARCHAR` |    40     |   /    |    ❌     | 冲突的字段名称 |
+
+#### `Nichijou: [Table] revise`
+
+|  名称   |  数据类型  | 长度/集合 | 无符号 | Nullable |      描述      |
+| :-----: | :--------: | :-------: | :----: | :------: | :------------: |
+|  `nid`  |   `INT`    |     /     |   ✅    |    ❌     |  内部番剧`id`  |
+| `field` | `VARCHAR`  |    40     |   /    |    ❌     | 修订的字段名称 |
+| `value` | `LONGTEXT` |     /     |   /    |    ❌     |    修订内容    |
 
 ### 发布数据规范
 
