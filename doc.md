@@ -9,7 +9,9 @@
 		- [自定义数据结构](#自定义数据结构)
 			- [`[Object] NameDistance`](#object-namedistance)
 			- [`[Object] RelatedItem`](#object-relateditem)
+			- [`[Object] AnimeSite`](#object-animesite)
 			- [`[Enum] AnimeEpisodeType`](#enum-animeepisodetype)
+			- [`[Enum] AnimeRegion`](#enum-animeregion)
 			- [`[Enum] AiringStatus`](#enum-airingstatus)
 		- [爬取数据库规范](#爬取数据库规范)
 			- [关于`id`](#关于id)
@@ -30,7 +32,15 @@
 			- [`Nichijou: [Table] match-fail`](#nichijou-table-match-fail)
 			- [`Nichijou: [Table] conflict`](#nichijou-table-conflict)
 			- [`Nichijou: [Table] revise`](#nichijou-table-revise)
+			- [`Nichijou: [Table] sites`](#nichijou-table-sites)
+			- [`Nichijou: [Table] sources`](#nichijou-table-sources)
 		- [发布数据规范](#发布数据规范)
+			- [`nichijou-db-essential`](#nichijou-db-essential)
+			- [`nichijou-db-anime`](#nichijou-db-anime)
+				- [发布数据种类](#发布数据种类)
+				- [发布数据格式 (动画条目)](#发布数据格式-动画条目)
+				- [发布数据格式 (剧集条目)](#发布数据格式-剧集条目)
+				- [额外发布数据 (元数据)](#额外发布数据-元数据)
 		- [发布数据方式](#发布数据方式)
 
 # Server
@@ -54,6 +64,8 @@
   - 解决 `Publisher` 发布时多个数据源数据冲突 (默认情况下会有合并优先级)
   - 人工修订数据
 
+**注意：这里的蜘蛛 / 爬取 / `Spider`是指比较广义的爬虫，包括有一定的数据源进行解析、直接读取API等操作。为方便阐述，统一使用蜘蛛指代。**
+
 ![nichijou-database](imgs/nichijou-database.svg)
 
 ### `Spider` 推荐实现
@@ -66,11 +78,13 @@
 
 ### `Publisher` 实现细节
 
-根据**内部数据库**的匹配数据，综合来自多个数据源的信息，并进行确认、核实。如果遇到多个信息源数据不同的情况，首先会根据默认优先级选择数据，但同时会记录一条`conflict`信息，等待人工审核批准。所有批准后的信息将作为`revise`写入数据库。注意：在所有信息合并的过程中，`revised`的数据有着最高优先级，并且不会产生`conflict`.
+根据**内部数据库**的匹配数据，综合来自多个数据源的信息，并进行确认、核实。
 
 ### 自定义数据结构
 
 #### `[Object] NameDistance`
+
+**名称与距离**
 
 | Field  |   Type   | Nullable | Description |
 | :----: | :------: | :------: | :---------: |
@@ -79,10 +93,21 @@
 
 #### `[Object] RelatedItem`
 
+**相关条目**
+
 | Field  |   Type   | Nullable | Description |
 | :----: | :------: | :------: | :---------: |
 | `name` | `String` |    ❌     |    名称     |
 | `url`  | `String` |    ❌     |    链接     |
+
+#### `[Object] AnimeSite`
+
+**动画网站链接**
+
+| Field  |   Type   | Nullable |  Description   |
+| :----: | :------: | :------: | :------------: |
+| `name` | `String` |    ❌     |    网站名称    |
+|  `id`  | `String` |    ❌     | 内容在网站的ID |
 
 #### `[Enum] AnimeEpisodeType`
 
@@ -97,6 +122,18 @@
 | PV/CM |   4   |
 |  MAD  |   5   |
 | 其他  |   6   |
+
+#### `[Enum] AnimeRegion`
+
+**动画播放地区**
+
+| Name  | Value |
+| :---: | :---: |
+| 大陆  | `CN`  |
+| 香港  | `HK`  |
+| 澳门  | `MO`  |
+| 台湾  | `TW`  |
+| 日本  | `JP`  |
 
 #### `[Enum] AiringStatus`
 
@@ -155,6 +192,7 @@
 | `rating`  | `DECIMAL`  |   32,28   |   ✅    |    ✅     |        站内评分         |
 |  `rank`   |   `INT`    |     /     |   ✅    |    ✅     |        站内排名         |
 | `related` | `LONGTEXT` |     /     |   /    |    ✅     | `json`: `[RelatedItem]` |
+|  `sites`  | `LONGTEXT` |     /     |   /    |    ✅     |  `json`: `[AnimeSite]`  |
 
 注: 
 - `date`之所以是`DATE`而不是`VARCHAR`，是因为诸如`bangumi`的网站里面虽然`date`有额外信息，比方说特典日期，但是已经包含在`meta`字段了，规范格式有助于后期处理。
@@ -178,6 +216,7 @@
 | `duration` |   `INT`    |     /     |   ✅    |    ✅     |         时长 (秒)         |
 |   `date`   |   `DATE`   |     /     |   /    |    ✅     |         放送日期          |
 |   `desc`   | `LONGTEXT` |     /     |   /    |    ✅     |           简介            |
+|  `sites`   | `LONGTEXT` |     /     |   /    |    ✅     |   `json`: `[AnimeSite]`   |
 
 #### `Spider: [Table] anime-name`
 
@@ -250,6 +289,8 @@
 |  `match-fail`  |    ✅     |   失败匹配   |
 |   `conflict`   |    ✅     |   冲突内容   |
 |    `revise`    |    ✅     |   修订数据   |
+|    `sites`     |    ✅     |   视频网站   |
+|   `sources`    |    ✅     |    数据源    |
 
 #### `Nichijou: [Table] anime`
 
@@ -303,14 +344,131 @@
 
 #### `Nichijou: [Table] revise`
 
-|  名称   |  数据类型  | 长度/集合 | 无符号 | Nullable |      描述      |
-| :-----: | :--------: | :-------: | :----: | :------: | :------------: |
-|  `nid`  |   `INT`    |     /     |   ✅    |    ❌     |  内部番剧`id`  |
-| `field` | `VARCHAR`  |    40     |   /    |    ❌     | 修订的字段名称 |
-| `value` | `LONGTEXT` |     /     |   /    |    ❌     |    修订内容    |
+|   名称   |  数据类型  | 长度/集合 | 无符号 | Nullable |      描述      |
+| :------: | :--------: | :-------: | :----: | :------: | :------------: |
+|  `nid`   |   `INT`    |     /     |   ✅    |    ❌     |  内部番剧`id`  |
+| `field`  | `VARCHAR`  |    40     |   /    |    ❌     | 修订的字段名称 |
+| `target` | `VARCHAR`  |    40     |   /    |    ✅     | 修订目标数据源 |
+| `value`  | `LONGTEXT` |     /     |   /    |    ✅     |    修订内容    |
+
+#### `Nichijou: [Table] sites`
+
+|     名称      |  数据类型  | 长度/集合 | 无符号 | Nullable |                 描述                 |
+| :-----------: | :--------: | :-------: | :----: | :------: | :----------------------------------: |
+|    `name`     | `VARCHAR`  |    40     |   /    |    ❌     |               网站名称               |
+| `urlTemplate` | `LONGTEXT` |     /     |   /    |    ❌     |               链接模板               |
+|   `regions`   | `LONGTEXT` |     /     |   /    |    ❌     | 支持地区`json, array`, `AnimeRegion` |
+
+注意：
+- `urlTemplate`举例: `https://www.bilibili.com/bangumi/media/md{{id}}`
+- 此部分设计借鉴 [bangumi-data](https://github.com/bangumi-data/bangumi-data)
+
+#### `Nichijou: [Table] sources`
+
+|  名称  |  数据类型  | 长度/集合 | 无符号 | Nullable |   描述   |
+| :----: | :--------: | :-------: | :----: | :------: | :------: |
+| `name` | `VARCHAR`  |    40     |   /    |    ❌     | 网站名称 |
+| `url`  | `LONGTEXT` |     /     |   /    |    ❌     | 网站链接 |
+
 
 ### 发布数据规范
 
+首先，我将说明为什么我们要发布若干个不同的数据库：
+1. 为了减少服务器压力，我们需要客户端内部有索引系统，便产生了索引数据的要求
+2. 我们不可能一下子将所有数据全部扔给客户端，因为这样会造成很大的带宽压力和储存压力，所以我们还需要有另一个在线的内容详细的数据库
+
+#### `nichijou-db-essential`
+
+主要解决索引问题，设计思路：
+- 单个`json`文件
+- 内部`id`
+- 各个不同名称的聚合
+
+API说明:
+- `[object] date`: 生成日期时间
+- `[array] data`: 内容
+  - `[object] nid`: 内部`id`
+  - `[array] names`: 名称
+
+举例：
+
+```
+{
+	"date": "2021-07-01 00:35:14",
+	"data": [
+		{
+			"nid": "<nid>",
+			"names": [
+				"<name1>",
+				"<name2>",
+				// ...
+			]
+		},
+		{
+			// ...
+		}
+	]
+}
+```
+
+#### `nichijou-db-anime`
+
+涵盖所有关于动画本身的信息。设计思路:
+- 每个条目一个`json`文件, 以`nid`命名
+- 涵盖所有内容
+
+##### 发布数据种类
+- `Unique Data` 事实类数据 (比方说放松时间、集数等): 此类数据有唯一确定的值。如果遇到多个信息源数据不同的情况，首先会根据默认优先级选择数据，但同时会记录一条`conflict`信息，等待人工审核批准。所有批准后的信息将作为`revise`写入数据库。注意：在所有信息合并的过程中，`revised`的数据有着最高优先级，并且不会产生`conflict`。
+- `Merge Data` 合并信息 (比方说播放链接): 此类数据一般以`list`储存，最终会进行合并，保证元素的唯一性。
+- `Additional Data` 补充信息 (比方说各个网站的`meta`、评分、简介等): 此类数据多个数据源可以相互补充，都会以字典的形式记录. 在这个情况下，如果`revise`的`target`字段为`null`，则为补充内容，反之如果指定`target`，则会修正相应数据，如果修正内容为`null`，则会直接忽略该条目。
+
+##### 发布数据格式 (动画条目)
+
+|    条目    |     种类     |         Type         | Nullable |   描述   |
+| :--------: | :----------: | :------------------: | :------: | :------: |
+|   `name`   |   `Unique`   |       `string`       |    ❌     |   原名   |
+| `name_cn`  |   `Unique`   |       `string`       |    ✅     |  中文名  |
+|  `names`   |   `Merge`    |       `string`       |    ❌     | 名称合集 |
+|   `desc`   |   `Unique`   |       `string`       |    ✅     |   简介   |
+| `eps_cnt`  |   `Unique`   |        `int`         |    ✅     |   话数   |
+|   `date`   |   `Unique`   |       `string`       |    ✅     | 放送日期 |
+| `weekday`  |   `Unique`   |        `int`         |    ✅     | 放送星期 |
+|   `meta`   | `Additional` |        `dict`        |    ✅     |  元数据  |
+|   `tags`   |   `Merge`    |    `list[string]`    |    ✅     |   标签   |
+|   `type`   |   `Unique`   |       `string`       |    ✅     |   种类   |
+|  `image`   |   `Merge`    |    `list[string]`    |    ✅     | 图像地址 |
+|  `rating`  | `Additional` |        `dict`        |    ✅     | 站内评分 |
+|   `rank`   | `Additional` |        `dict`        |    ✅     | 站内排名 |
+|   `urls`   | `Additional` |        `dict`        |    ✅     | 番剧链接 |
+| `related`  |   `Merge`    | `list[RelatedItem]`  |    ✅     | 相关条目 |
+|  `sites`   |   `Merge`    |  `list[AnimeSite]`   |    ✅     | 播放网站 |
+| `episodes` |   `Merge`    | `list[AnimeEpisode]` |    ✅     | 剧集信息 |
+
+##### 发布数据格式 (剧集条目)
+
+发布动画格式的最后一个字段为`episodes`, 其的类型是`list[AnimeEpisode]`，这里就来阐述一下`AnimeEpisode`的格式。
+
+|    条目    |     种类     |          Type           | Nullable |       描述       |
+| :--------: | :----------: | :---------------------: | :------: | :--------------: |
+|   `type`   |   `Unique`   | `int[AnimeEpisodeType]` |    ❌     |     剧集种类     |
+|   `sort`   |   `Unique`   |          `int`          |    ❌     | 当前`type`多少话 |
+|   `name`   |   `Unique`   |        `string`         |    ❌     |       原名       |
+| `name_cn`  |   `Unique`   |        `string`         |    ✅     |      中文名      |
+|  `names`   |   `Merge`    |        `string`         |    ❌     |     名称合集     |
+|   `desc`   |   `Unique`   |        `string`         |    ✅     |       简介       |
+|   `date`   |   `Unique`   |        `string`         |    ✅     |     放送日期     |
+|  `status`  |   `Unique`   |   `int[AiringStatus]`   |    ❌     |     放送状态     |
+| `duration` |   `Unique`   |          `int`          |    ✅     |    时长 (秒)     |
+|   `urls`   | `Additional` |         `dict`          |    ✅     |     剧集链接     |
+|  `sites`   |   `Merge`    |    `list[AnimeSite]`    |    ✅     |     播放网站     |
+
+##### 额外发布数据 (元数据)
+
+除此之外，还有一个`metas.json`，用来发布各种常量数据与元数据。涵盖内容包括：
+- `nichijou/sites` 数据表
+- 定义的`Enum`: `{<value>: <name>}`
 
 ### 发布数据方式
 
+- `npm` (暂定)
+- `GitHub` + `jsDelivr`
