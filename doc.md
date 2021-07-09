@@ -6,6 +6,7 @@
 		- [`Spider` 推荐实现](#spider-推荐实现)
 		- [`Matcher` 实现细节](#matcher-实现细节)
 		- [`Publisher` 实现细节](#publisher-实现细节)
+		- [关于日期与时间](#关于日期与时间)
 		- [自定义数据结构](#自定义数据结构)
 			- [`[Object] NameDistance`](#object-namedistance)
 			- [`[Object] RelatedItem`](#object-relateditem)
@@ -79,6 +80,14 @@
 ### `Publisher` 实现细节
 
 根据**内部数据库**的匹配数据，综合来自多个数据源的信息，并进行确认、核实。
+
+### 关于日期与时间
+
+本项目中对于日期**不采用**ISO 8601标准。我们的时间格式统一为：
+- 日期：`YYYY-MM-DD `
+- 日期与时间：`YYYY-MM-DD HH:MM:SS`
+
+由于数据量很大，且都为自动处理的，所以大部分时间都只能精确到天，且无法确定时区，所以作如上规定。
 
 ### 自定义数据结构
 
