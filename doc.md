@@ -257,13 +257,14 @@
 
 #### `Spider: [Table] request_failed`
 
-**`Primary Key`: `spider` & `url`**
+**`Primary Key`: `spider` & `url_md5`**
 
-|   名称   |  数据类型  | 长度/集合 | 无符号 | Nullable |      描述       |
-| :------: | :--------: | :-------: | :----: | :------: | :-------------: |
-|  `url`   | `LONGTEXT` |     /     |   ✅    |    ❌     | 失败任务的`url` |
-| `spider` | `VARCHAR`  |    20     |   /    |    ❌     |   蜘蛛的名称    |
-|  `desc`  | `LONGTEXT` |     /     |   /    |    ✅     |    错误内容     |
+|   名称    |  数据类型  | 长度/集合 | 无符号 | Nullable |       描述       |
+| :-------: | :--------: | :-------: | :----: | :------: | :--------------: |
+| `url_md5` | `VARCHAR`  |    32     |   /    |    ❌     | `url`的大写`MD5` |
+|   `url`   | `LONGTEXT` |     /     |   /    |    ❌     | 失败任务的`url`  |
+| `spider`  | `VARCHAR`  |    20     |   /    |    ❌     |    蜘蛛的名称    |
+|  `desc`   | `LONGTEXT` |     /     |   /    |    ✅     |     错误内容     |
 
 注:
 - `spider`字段，以`Scrapy`为例，应该为`<spider>.name`
@@ -271,13 +272,14 @@
 
 #### `Spider: [Table] cache`
 
-**`Primary Key`: `url`**
+**`Primary Key`: `url_md5`**
 
-|   名称    |  数据类型  | 长度/集合 | 无符号 | Nullable |      描述      |
-| :-------: | :--------: | :-------: | :----: | :------: | :------------: |
-|   `url`   | `LONGTEXT` |     /     |   /    |    ❌     | 缓存内容的链接 |
-| `expire`  | `DATETIME` |     /     |   /    |    ❌     |  缓存过期时间  |
-| `content` | `LONGTEXT` |     /     |   /    |    ❌     |    缓存内容    |
+|   名称    |  数据类型  | 长度/集合 | 无符号 | Nullable |       描述       |
+| :-------: | :--------: | :-------: | :----: | :------: | :--------------: |
+| `url_md5` | `VARCHAR`  |    32     |   /    |    ❌     | `url`的大写`MD5` |
+|   `url`   | `LONGTEXT` |     /     |   /    |    ❌     |  缓存内容的链接  |
+| `expire`  | `DATETIME` |     /     |   /    |    ❌     |   缓存过期时间   |
+| `content` | `LONGTEXT` |     /     |   /    |    ❌     |     缓存内容     |
 
 ### 内部数据库规范
 
