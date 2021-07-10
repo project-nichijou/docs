@@ -257,6 +257,8 @@
 
 #### `Spider: [Table] request_failed`
 
+**`Primary Key`: `spider` & `url`**
+
 |   名称   |  数据类型  | 长度/集合 | 无符号 | Nullable |      描述       |
 | :------: | :--------: | :-------: | :----: | :------: | :-------------: |
 |  `url`   | `LONGTEXT` |     /     |   ✅    |    ❌     | 失败任务的`url` |
