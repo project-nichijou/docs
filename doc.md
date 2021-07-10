@@ -19,17 +19,17 @@
 			- [`Spider: Tables`](#spider-tables)
 			- [`Spider: [Table] anime`](#spider-table-anime)
 			- [`Spider: [Table] episode`](#spider-table-episode)
-			- [`Spider: [Table] anime-name`](#spider-table-anime-name)
-			- [`Spider: [Table] episode-name`](#spider-table-episode-name)
+			- [`Spider: [Table] anime_name`](#spider-table-anime_name)
+			- [`Spider: [Table] episode_name`](#spider-table-episode_name)
 			- [`Spider: [Table] log`](#spider-table-log)
-			- [`Spider: [Table] request-failed`](#spider-table-request-failed)
+			- [`Spider: [Table] request_failed`](#spider-table-request_failed)
 			- [`Spider: [Table] cache`](#spider-table-cache)
 		- [内部数据库规范](#内部数据库规范)
 			- [内部`ID` (`Nichijou ID`)](#内部id-nichijou-id)
 			- [`Nichijou: Tables`](#nichijou-tables)
 			- [`Nichijou: [Table] anime`](#nichijou-table-anime)
-			- [`Nichijou: [Table] anime-name`](#nichijou-table-anime-name)
-			- [`Nichijou: [Table] episode-name`](#nichijou-table-episode-name)
+			- [`Nichijou: [Table] anime_name`](#nichijou-table-anime_name)
+			- [`Nichijou: [Table] episode_name`](#nichijou-table-episode_name)
 			- [`Nichijou: [Table] match-fail`](#nichijou-table-match-fail)
 			- [`Nichijou: [Table] conflict`](#nichijou-table-conflict)
 			- [`Nichijou: [Table] revise`](#nichijou-table-revise)
@@ -171,10 +171,10 @@
 | :--------------: | :------: | :-----------------------------------: |
 |     `anime`      |    ✅     |             动画详细信息              |
 |    `episode`     |    ✅     |           动画分集详细信息            |
-|   `anime-name`   |    ✅     |             动画名称汇总              |
-|  `episode-name`  |    ✅     |             剧集名称汇总              |
+|   `anime_name`   |    ✅     |             动画名称汇总              |
+|  `episode_name`  |    ✅     |             剧集名称汇总              |
 |      `log`       |    ✅     |                 日志                  |
-| `request-failed` |    ✅     |        失败请求 (可以进行重试)        |
+| `request_failed` |    ✅     |        失败请求 (可以进行重试)        |
 |     `cache`      |    ✅     |               蜘蛛缓存                |
 |       `id`       |    ❌     | 精简的`id`表, 可以附上`URL`和基本信息 |
 
@@ -227,7 +227,7 @@
 |   `desc`   | `LONGTEXT` |     /     |   /    |    ✅     |           简介            |
 |  `sites`   | `LONGTEXT` |     /     |   /    |    ✅     |   `json`: `[AnimeSite]`   |
 
-#### `Spider: [Table] anime-name`
+#### `Spider: [Table] anime_name`
 
 **`Primary Key`: `id` & `name`**
 
@@ -236,7 +236,7 @@
 |  `id`  |   `INT`   |     /     |   ✅    |    ❌     | 数据源番剧的唯一`id` |
 | `name` | `VARCHAR` |    200    |   /    |    ❌     |       番剧名称       |
 
-#### `Spider: [Table] episode-name`
+#### `Spider: [Table] episode_name`
 
 **`Primary Key`: `id` & `type` & `sort` & `name`**
 
@@ -255,7 +255,7 @@
 |  `time`   | `DATETIME` |     /     |   /    |    ❌     | 时间  |
 | `content` | `LONGTEXT` |     /     |   /    |    ❌     | 内容  |
 
-#### `Spider: [Table] request-failed`
+#### `Spider: [Table] request_failed`
 
 |   名称   |  数据类型  | 长度/集合 | 无符号 | Nullable |      描述       |
 | :------: | :--------: | :-------: | :----: | :------: | :-------------: |
@@ -293,8 +293,8 @@
 |      名称      | Required | Description  |
 | :------------: | :------: | :----------: |
 |    `anime`     |    ✅     | 番剧匹配索引 |
-|  `anime-name`  |    ✅     |   番剧名称   |
-| `episode-name` |    ✅     |   剧集名称   |
+|  `anime_name`  |    ✅     |   番剧名称   |
+| `episode_name` |    ✅     |   剧集名称   |
 |  `match-fail`  |    ✅     |   失败匹配   |
 |   `conflict`   |    ✅     |   冲突内容   |
 |    `revise`    |    ✅     |   修订数据   |
@@ -312,7 +312,7 @@
 
 说明：`<source>`为模板，即数据源的名称。多个数据源会增加列数。
 
-#### `Nichijou: [Table] anime-name`
+#### `Nichijou: [Table] anime_name`
 
 **`Primary Key`: `nid` & `name`**
 
@@ -321,7 +321,7 @@
 | `nid`  |   `INT`   |     /     |   ✅    |    ❌     | 内部番剧`id` |
 | `name` | `VARCHAR` |    200    |   /    |    ❌     |   番剧名称   |
 
-#### `Nichijou: [Table] episode-name`
+#### `Nichijou: [Table] episode_name`
 
 **`Primary Key`: `nid` & `type` & `sort` & `name`**
 
