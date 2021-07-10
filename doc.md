@@ -245,7 +245,7 @@
 |  `id`  |   `INT`   |     /     |   ✅    |    ❌     |   数据源番剧的唯一`id`    |
 | `type` |   `INT`   |     /     |   ✅    |    ❌     | `[Enum] AnimeEpisodeType` |
 | `sort` |   `INT`   |     /     |   ✅    |    ❌     |    当前`type`中多少话     |
-| `name` | `VARCHAR` |    200    |   /    |    ✅     |         剧集名称          |
+| `name` | `VARCHAR` |    200    |   /    |    ❌     |         剧集名称          |
 
 
 #### `Spider: [Table] log`
