@@ -265,10 +265,12 @@
 |   `url`   | `LONGTEXT` |     /     |   /    |    ❌     | 失败任务的`url`  |
 | `spider`  | `VARCHAR`  |    20     |   /    |    ❌     |    蜘蛛的名称    |
 |  `desc`   | `LONGTEXT` |     /     |   /    |    ✅     |     错误内容     |
+| `params`  | `LONGTEXT` |     /     |   /    |    ✅     |     其他参数     |
 
 注:
 - `spider`字段，以`Scrapy`为例，应该为`<spider>.name`
 - `desc`字段，如果可以，尽可能附带堆栈信息
+- `params`字段主要为重试时需要附带的参数，可以用`json`存
 
 #### `Spider: [Table] cache`
 
