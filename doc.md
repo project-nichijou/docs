@@ -281,7 +281,7 @@
 | `url_md5` | `VARCHAR`  |    32     |   /    |    ❌     | `url`的大写`MD5` |
 |   `url`   | `LONGTEXT` |     /     |   /    |    ❌     |  缓存内容的链接  |
 | `expire`  | `DATETIME` |     /     |   /    |    ❌     |   缓存过期时间   |
-| `content` | `LONGTEXT` |     /     |   /    |    ❌     |     缓存内容     |
+| `content` | `LONGBLOB` |     /     |   /    |    ✅     |     缓存内容     |
 
 ### 内部数据库规范
 
