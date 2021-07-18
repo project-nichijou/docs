@@ -408,7 +408,7 @@
 - 各个不同名称的聚合
 
 API说明:
-- `[object] date`: 生成日期时间
+- `[object] time`: 生成日期时间
 - `[array] data`: 内容
   - `[object] nid`: 内部`id`
   - `[array] names`: 名称
@@ -417,7 +417,7 @@ API说明:
 
 ```
 {
-	"date": "2021-07-01 00:35:14",
+	"time": "2021-07-01 00:35:14",
 	"data": {
 		"<nid>": [
 			"<name1>",
