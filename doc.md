@@ -35,6 +35,7 @@
 			- [`Nichijou: [Table] revise`](#nichijou-table-revise)
 			- [`Nichijou: [Table] sites`](#nichijou-table-sites)
 			- [`Nichijou: [Table] sources`](#nichijou-table-sources)
+			- [`Nichijou: [Table] log`](#nichijou-table-log)
 		- [发布数据规范](#发布数据规范)
 			- [`nichijou-db-essential`](#nichijou-db-essential)
 			- [`nichijou-db-anime`](#nichijou-db-anime)
@@ -308,6 +309,7 @@
 |    `revise`    |    ✅     |   修订数据   |
 |    `sites`     |    ✅     |   视频网站   |
 |   `sources`    |    ✅     |    数据源    |
+|     `log`      |    ✅     |     日志     |
 
 #### `Nichijou: [Table] anime`
 
@@ -393,6 +395,12 @@
 | `name` | `VARCHAR`  |    40     |   /    |    ❌     | 网站名称 |
 | `url`  | `LONGTEXT` |     /     |   /    |    ❌     | 网站链接 |
 
+#### `Nichijou: [Table] log`
+
+|   名称    |  数据类型  | 长度/集合 | 无符号 | Nullable | 描述  |
+| :-------: | :--------: | :-------: | :----: | :------: | :---: |
+|  `time`   | `DATETIME` |     /     |   /    |    ❌     | 时间  |
+| `content` | `LONGTEXT` |     /     |   /    |    ❌     | 内容  |
 
 ### 发布数据规范
 
