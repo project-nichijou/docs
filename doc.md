@@ -30,7 +30,7 @@
 			- [`Nichijou: [Table] anime`](#nichijou-table-anime)
 			- [`Nichijou: [Table] anime_name`](#nichijou-table-anime_name)
 			- [`Nichijou: [Table] episode_name`](#nichijou-table-episode_name)
-			- [`Nichijou: [Table] match-fail`](#nichijou-table-match-fail)
+			- [`Nichijou: [Table] match_fail`](#nichijou-table-match_fail)
 			- [`Nichijou: [Table] conflict`](#nichijou-table-conflict)
 			- [`Nichijou: [Table] revise`](#nichijou-table-revise)
 			- [`Nichijou: [Table] sites`](#nichijou-table-sites)
@@ -303,7 +303,7 @@
 |    `anime`     |    ✅     | 番剧匹配索引 |
 |  `anime_name`  |    ✅     |   番剧名称   |
 | `episode_name` |    ✅     |   剧集名称   |
-|  `match-fail`  |    ✅     |   失败匹配   |
+|  `match_fail`  |    ✅     |   失败匹配   |
 |   `conflict`   |    ✅     |   冲突内容   |
 |    `revise`    |    ✅     |   修订数据   |
 |    `sites`     |    ✅     |   视频网站   |
@@ -340,7 +340,7 @@
 | `sort` |   `INT`   |     /     |   ✅    |    ❌     |    当前`type`中多少话     |
 | `name` | `VARCHAR` |    200    |   /    |    ✅     |         剧集名称          |
 
-#### `Nichijou: [Table] match-fail`
+#### `Nichijou: [Table] match_fail`
 
 **`Primary Key`: `id` & `source`**
 
