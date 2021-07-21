@@ -43,6 +43,7 @@
 				- [发布数据格式 (动画条目)](#发布数据格式-动画条目)
 				- [发布数据格式 (剧集条目)](#发布数据格式-剧集条目)
 				- [额外发布数据 (元数据)](#额外发布数据-元数据)
+			- [`nichijou-db-episode-name`](#nichijou-db-episode-name)
 		- [发布数据方式](#发布数据方式)
 
 # Server
@@ -493,6 +494,45 @@ API说明:
 除此之外，还有一个`metas.json`，用来发布各种常量数据与元数据。涵盖内容包括：
 - `nichijou/sites` 数据表
 - 定义的`Enum`: `{<value>: <name>}`
+
+#### `nichijou-db-episode-name`
+
+包含所有剧集名称，用于文件名匹配服务。因为本来剧集名称是包含在全数据库当中且其大小较为庞大，所以另行开辟一个数据分发。
+
+主要解决索引问题，设计思路：
+- 单个`json`文件
+- 内部`id`, `type`, `sort`三个层级
+- 各个不同名称的聚合
+
+API说明:
+- `[object] time`: 生成日期时间
+- `[array] data`: 内容
+  - `[object] nid`: 内部`id`
+  - `[object] type`: 剧集种类，参见`AnimeEpisodeType`
+  - `[object] sort`: 剧集排序，参见类似的`episode` Table中的解释
+  - `[array] names`: 名称
+
+举例：
+
+```
+{
+	"time": "2021-07-01 00:35:14",
+	"data": {
+		"<nid>": {
+			"<type>": {
+				"<sort>": [
+					"<name1>",
+					"<name2>",
+					// ...
+				], 
+				// ...
+			}, 
+			// ...
+		}, 
+		// ...
+	}
+}
+```
 
 ### 发布数据方式
 
