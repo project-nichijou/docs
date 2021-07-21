@@ -454,7 +454,7 @@ API说明:
 | :--------: | :----------: | :------------------: | :------: | :------: |
 |   `name`   |   `Unique`   |       `string`       |    ❌     |   原名   |
 | `name_cn`  |   `Unique`   |       `string`       |    ✅     |  中文名  |
-|  `names`   |   `Merge`    |       `string`       |    ❌     | 名称合集 |
+|  `names`   |   `Merge`    |    `list[string]`    |    ❌     | 名称合集 |
 |   `desc`   |   `Unique`   |       `string`       |    ✅     |   简介   |
 | `eps_cnt`  |   `Unique`   |        `int`         |    ✅     |   话数   |
 |   `date`   |   `Unique`   |       `string`       |    ✅     | 放送日期 |
@@ -480,7 +480,7 @@ API说明:
 |   `sort`   |   `Unique`   |          `int`          |    ❌     | 当前`type`多少话 |
 |   `name`   |   `Unique`   |        `string`         |    ❌     |       原名       |
 | `name_cn`  |   `Unique`   |        `string`         |    ✅     |      中文名      |
-|  `names`   |   `Merge`    |        `string`         |    ❌     |     名称合集     |
+|  `names`   |   `Merge`    |     `list[string]`      |    ❌     |     名称合集     |
 |   `desc`   |   `Unique`   |        `string`         |    ✅     |       简介       |
 |   `date`   |   `Unique`   |        `string`         |    ✅     |     放送日期     |
 |  `status`  |   `Unique`   |   `int[AiringStatus]`   |    ❌     |     放送状态     |
