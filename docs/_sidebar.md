@@ -1,2 +1,13 @@
 - [简介](README.md)
-- 技术文档
+- [服务端](./server/index.md)
+  - [番剧数据库的构建](./server/anime-database/index.md)
+    - [总架构](./server/anime-database/arch.md)
+    - [数据结构与格式](./server/anime-database/data-structure.md)
+    - [Spider](./server/anime-database/spider.md)
+    - [内部数据库](./server/anime-database/nichijou-db.md)
+    - [Matcher](./server/anime-database/matcher.md)
+    - [Publisher](./server/anime-database/publisher.md)
+  - 数据维护站点
+    - 总架构
+    - 后端
+    - 前端
