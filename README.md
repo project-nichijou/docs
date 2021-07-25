@@ -7,3 +7,5 @@
 # 介绍
 
 **全功能弹幕播放器**，项目逐步推进中...（咕咕咕
+
+具体文档详见：https://project-nichijou.github.io/docs/
