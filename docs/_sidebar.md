@@ -4,8 +4,13 @@
     - [总架构](./server/anime-database/arch.md)
     - [数据结构与格式](./server/anime-database/data-structure.md)
     - [Spider](./server/anime-database/spider.md)
-    - [内部数据库](./server/anime-database/nichijou-db.md)
+      - [框架](./server/anime-database/spider/common.md)
+      - [Bangumi实现](./server/anime-database/spider/bangumi.md)
+      - [AniDB索引实现](./server/anime-database/spider/anidb-index.md)
+    - [内部番剧数据库](./server/anime-database/nichijou-db.md)
+      - [常用工具](./server/anime-database/nichijou-db/tools.md)
     - [Matcher](./server/anime-database/matcher.md)
+      - [Matcher实现](./server/anime-database/matcher/matcher.md)
     - [Publisher](./server/anime-database/publisher.md)
   - 数据维护站点
     - 总架构
