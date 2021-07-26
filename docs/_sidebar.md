@@ -1,6 +1,6 @@
 - [简介](README.md)
-- [服务端](./server/index.md)
-  - [番剧数据库的构建](./server/anime-database/index.md)
+- [服务端](./server.md)
+  - [番剧数据库的构建](./server/anime-database.md)
     - [总架构](./server/anime-database/arch.md)
     - [数据结构与格式](./server/anime-database/data-structure.md)
     - [Spider](./server/anime-database/spider.md)
