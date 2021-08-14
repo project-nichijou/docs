@@ -1,4 +1,4 @@
-`repo site`: https://github.com/project-nichijou/anidb-index
+`repo site`: https://github.com/project-nichijou/nichijou.server.spider.anidb-index
 
 - [介绍](#介绍)
 - [环境](#环境)
@@ -9,7 +9,7 @@
 
 本项目作为项目[Project Nichijou](https://github.com/project-nichijou)中的子项目，是[AniDB](anidb.net)的数据库标题索引，用于构建番剧数据库。完整内容详见: https://project-nichijou.github.io/docs
 
-本项目根据[内部规范](https://project-nichijou.github.io/docs/#/./server/anime-database/spider)，基于[内部框架](https://github.com/project-nichijou/spider-common)进行开发。
+本项目根据[内部规范](https://project-nichijou.github.io/docs/#/./server/anime-database/spider)，基于[内部框架](https://github.com/project-nichijou/nichijou.server.spider.common)进行开发。
 
 本repo只包含：
 - 从[官方API](https://wiki.anidb.net/API)获取标题`XML`数据
@@ -24,7 +24,7 @@
 
 # 配置方法
 
-`common`子项目的配置，详见[这里](https://github.com/project-nichijou/spider-common#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)。由于本项目比较简单，所以只需要配置数据库字段即可。
+`common`子项目的配置，详见[这里](https://github.com/project-nichijou/nichijou.server.spider.common#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)。由于本项目比较简单，所以只需要配置数据库字段即可。
 
 # 使用方法
 

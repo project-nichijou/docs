@@ -1,4 +1,4 @@
-`repo site`: https://github.com/project-nichijou/spider-common/
+`repo site`: https://github.com/project-nichijou/nichijou.server.spider.common/
 
 - [介绍](#介绍)
 - [结构](#结构)

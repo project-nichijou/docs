@@ -4,15 +4,23 @@
     - [总架构](./server/anime-database/arch.md)
     - [数据结构与格式](./server/anime-database/data-structure.md)
     - [Spider](./server/anime-database/spider.md)
-      - [框架](./server/anime-database/spider/common.md)
-      - [Bangumi实现](./server/anime-database/spider/bangumi.md)
-      - [AniDB索引实现](./server/anime-database/spider/anidb-index.md)
     - [内部番剧数据库](./server/anime-database/nichijou-db.md)
-      - [常用工具](./server/anime-database/nichijou-db/tools.md)
     - [Matcher](./server/anime-database/matcher.md)
-      - [Matcher实现](./server/anime-database/matcher/matcher.md)
     - [Publisher](./server/anime-database/publisher.md)
   - 数据维护站点
     - 总架构
+    - 用户数据库设计
+    - 操作数据库设计
     - 后端
     - 前端
+- 实现
+  - nichijou.server
+    - nichijou.server.spider
+      - [nichijou.server.spider.common](./nichijou/server/spider/common.md)
+      - [nichijou.server.spider.bangumi](./nichijou/server/spider/bangumi.md)
+      - [nichijou.server.spider.anidb-index](./nichijou/server/spider/anidb-index.md)
+    - nichijou.server.database
+      - [nichijou.server.database.tools](./nichijou/server/database/tools.md)
+      - [nichijou.server.database.matcher](./nichijou/server/database/matcher.md)
+      - nichijou.server.database.publisher
+      - nichijou.server.database.essential

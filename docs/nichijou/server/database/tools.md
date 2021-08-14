@@ -1,4 +1,4 @@
-`repo site`: https://github.com/project-nichijou/nichijou-db-tools/
+`repo site`: https://github.com/project-nichijou/nichijou.server.database.tools/
 
 # 简介
 
@@ -12,4 +12,4 @@
 
 ## `fetch_name_table.py`
 
-从`nichijou-db-essential`中拉取数据，还原`nichijou | anime_name`表
+从`nichijou.server.database.essential`中拉取数据，还原`nichijou | anime_name`表

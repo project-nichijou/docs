@@ -1,4 +1,4 @@
-`repo site`: https://github.com/project-nichijou/bangumi-spider/
+`repo site`: https://github.com/project-nichijou/nichijou.server.spider.bangumi/
 
 - [介绍](#介绍)
 - [关于爬虫](#关于爬虫)
@@ -14,7 +14,7 @@
 
 本项目为[Project Nichijou](https://github.com/project-nichijou)中的子项目，是[Bangumi 番组计划](bgm.tv)的爬虫，用于构建番剧数据库。完整内容详见: https://project-nichijou.github.io/docs
 
-本项目根据[内部规范](https://project-nichijou.github.io/docs/#/./server/anime-database/spider)，基于[内部框架](https://github.com/project-nichijou/spider-common)进行开发。
+本项目根据[内部规范](https://project-nichijou.github.io/docs/#/./server/anime-database/spider)，基于[内部框架](https://github.com/project-nichijou/nichijou.server.spider.common)进行开发。
 
 # 关于爬虫
 
@@ -42,7 +42,7 @@
 
 # 配置方法
 
-- `common`子项目的配置，详见[这里](https://github.com/project-nichijou/spider-common#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
+- `common`子项目的配置，详见[这里](https://github.com/project-nichijou/nichijou.server.spider.common#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
 - `bangumi/config/bangumi_settings`中配置本项目的相关字段`bangumi` (默认情况下无需更改)
 - `bangumi/config/scrapy_settings`中配置`scrapy`的相关字段 (默认情况下无需更改)
 

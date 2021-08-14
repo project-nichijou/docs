@@ -1,4 +1,4 @@
-`repo site`: https://github.com/project-nichijou/anime-database-matcher/
+`repo site`: https://github.com/project-nichijou/nichijou.server.database.matcher/
 
 - [介绍](#介绍)
 - [原理](#原理)
